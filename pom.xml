@@ -6,12 +6,12 @@
 
     <groupId>br.com.sawcunhaos</groupId>
     <artifactId>scos-bom</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SCOS BOM</name>
     <description>SawCunha Open System - Official Bill of Materials (BOM) that standardizes and aligns dependency versions across all SCOS projects</description>
-    <url>https://github.com/sawcunha/sawcunha-open-system-bom</url>
+    <url>https://github.com/sawcunhaos/sawcunha-open-system-bom</url>
     <inceptionYear>2024</inceptionYear>
 
     <licenses>
@@ -68,70 +68,70 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Spring Ecosystem Versions -->
-        <spring-boot-dependencies.version>4.0.2</spring-boot-dependencies.version>
-        <spring-framework-bom.version>7.0.3</spring-framework-bom.version>
+        <spring-boot-dependencies.version>4.0.6</spring-boot-dependencies.version>
+        <spring-framework-bom.version>7.0.7</spring-framework-bom.version>
         <spring-cloud-dependencies.version>2025.1.1</spring-cloud-dependencies.version>
-        <spring-kafka-bom.version>4.0.2</spring-kafka-bom.version>
-        <spring-data-bom.version>2025.1.2</spring-data-bom.version>
+        <spring-kafka-bom.version>4.0.5</spring-kafka-bom.version>
+        <spring-data-bom.version>2025.1.5</spring-data-bom.version>
 
         <!-- Serialization -->
-        <jackson-bom.version>3.0.4</jackson-bom.version>
+        <jackson-bom.version>3.1.3</jackson-bom.version>
 
         <!-- Testing -->
-        <junit-bom.version>6.0.2</junit-bom.version>
-        <testcontainers-bom.version>2.0.3</testcontainers-bom.version>
+        <junit-bom.version>6.1.0</junit-bom.version>
+        <testcontainers-bom.version>2.0.5</testcontainers-bom.version>
 
         <!-- Build Plugins -->
         <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
 
         <!-- Utilities & Annotations -->
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
-        <lombok.version>1.18.42</lombok.version>
-        <gson.version>2.13.2</gson.version>
+        <lombok.version>1.18.46</lombok.version>
+        <gson.version>2.14.0</gson.version>
 
         <!-- Database & ORM -->
-        <postgresql.version>42.7.9</postgresql.version>
-        <liquibase.version>5.0.1</liquibase.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <liquibase.version>5.0.3</liquibase.version>
         <op_querydsl.version>7.1</op_querydsl.version>
-        <mysql-connector-j.version>9.5.0</mysql-connector-j.version>
-        <hibernate-spatial.version>7.2.0.Final</hibernate-spatial.version>
+        <mysql-connector-j.version>9.7.0</mysql-connector-j.version>
+        <hibernate-spatial.version>7.3.5.Final</hibernate-spatial.version>
         <jts-core.version>1.20.0</jts-core.version>
-        <hypersistence-utils-hibernate-71.version>3.14.1</hypersistence-utils-hibernate-71.version>
+        <hypersistence-utils-hibernate-71.version>3.15.2</hypersistence-utils-hibernate-71.version>
 
         <!-- Testing Tools -->
-        <mockito.version>5.21.0</mockito.version>
+        <mockito.version>5.23.0</mockito.version>
 
         <!-- Configuration & Security -->
-        <snakeyaml.version>2.5</snakeyaml.version>
-        <json.version>20250517</json.version>
+        <snakeyaml.version>2.6</snakeyaml.version>
+        <json.version>20251224</json.version>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
         <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
-        <bcprov-jdk18on.version>1.83</bcprov-jdk18on.version>
-        <bcpkix-jdk18on.version>1.83</bcpkix-jdk18on.version>
-        <jasypt-spring-boot-starter.version>4.0.3</jasypt-spring-boot-starter.version>
+        <bcprov-jdk18on.version>1.84</bcprov-jdk18on.version>
+        <bcpkix-jdk18on.version>1.84</bcpkix-jdk18on.version>
+        <jasypt-spring-boot-starter.version>4.0.4</jasypt-spring-boot-starter.version>
 
         <!-- Utilities -->
-        <commons-io.version>2.21.0</commons-io.version>
+        <commons-io.version>2.22.0</commons-io.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <guava.version>33.5.0-jre</guava.version>
+        <guava.version>33.6.0-jre</guava.version>
         <reflections.version>0.10.2</reflections.version>
-        <caffeine.version>3.2.3</caffeine.version>
+        <caffeine.version>3.2.4</caffeine.version>
 
         <!-- Logging & Monitoring -->
         <logback-gelf.version>6.1.2</logback-gelf.version>
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 
         <!-- Caching & Data -->
-        <jedis.version>7.2.0</jedis.version>
-        <shedlock-spring.version>7.3.0</shedlock-spring.version>
+        <jedis.version>7.5.0</jedis.version>
+        <shedlock-spring.version>7.7.0</shedlock-spring.version>
 
         <!-- AOP & HTTP -->
         <aspectjweaver.version>1.9.25.1</aspectjweaver.version>
-        <feign-okhttp.version>13.6</feign-okhttp.version>
+        <feign-okhttp.version>13.12</feign-okhttp.version>
 
         <!-- Testing REST APIs -->
         <spring-mock-mvc.version>6.0.0</spring-mock-mvc.version>
-        <wiremock-spring-boot.version>4.0.8</wiremock-spring-boot.version>
+        <wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
     </properties>
 
@@ -441,7 +441,7 @@
                                     <version>[3.9.12,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[21,)</version>
+                                    <version>[25,)</version>
                                 </requireJavaVersion>
                             </rules>
                             <fail>true</fail>
@@ -582,7 +582,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>12.2.0</version>
+                        <version>12.2.2</version>
                         <executions>
                             <execution>
                                 <goals>
