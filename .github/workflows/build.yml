@@ -47,18 +47,70 @@ jobs:
     - name: Build package
       run: mvn -B package -DskipTests
 
-    - name: Archive artifacts
+    - name: Archive root artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: maven-build-${{ matrix.java-version }}
+        name: maven-build-root-${{ matrix.java-version }}
         path: target/
-        retention-days: 5
+        retention-days: 7
+
+    - name: Archive privacy module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-privacy-${{ matrix.java-version }}
+        path: privacy/target/
+        retention-days: 7
+
+    - name: Archive utils module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-utils-${{ matrix.java-version }}
+        path: utils/target/
+        retention-days: 7
+
+    - name: Archive exception module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-exception-${{ matrix.java-version }}
+        path: exception/target/
+        retention-days: 7
+
+    - name: Archive audit module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-audit-${{ matrix.java-version }}
+        path: audit/target/
+        retention-days: 7
+
+    - name: Archive jdempotent module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-jdempotent-${{ matrix.java-version }}
+        path: jdempotent/target/
+        retention-days: 7
+
+    - name: Archive security module artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-build-security-${{ matrix.java-version }}
+        path: security/target/
+        retention-days: 7
 
   security-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     needs: build
+
+    strategy:
+      matrix:
+        java-version: [ '25' ]
 
     steps:
     - uses: actions/checkout@v4
@@ -66,9 +118,22 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v4
       with:
-        java-version: '25'
+        java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
         cache: maven
+
+    - name: Cache Maven packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Compile + test with the JaCoCo agent so SpotBugs has classes to analyze
+    # and jacoco.exec exists for the coverage report. A fresh checkout has neither.
+    - name: Compile and run tests (coverage agent)
+      run: mvn -B -Panalyze test
 
     - name: Run dependency check
       run: mvn -B -Panalyze dependency-check:check
@@ -76,13 +141,85 @@ jobs:
 
     - name: Run checkstyle
       run: mvn -B -Panalyze checkstyle:check
-      continue-on-error: true
 
-    - name: Publish test results
+    - name: Run SpotBugs
+      run: mvn -B -Panalyze spotbugs:check
+      continue-on-error: false
+
+    - name: Generate JaCoCo report
+      if: always()
+      run: mvn -B -Panalyze jacoco:report
+
+    - name: Upload JaCoCo report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: security-report
-        path: target/
-        retention-days: 3
+        name: jacoco-report-${{ matrix.java-version }}
+        path: '**/target/site/jacoco/'
+        retention-days: 7
 
+    - name: Upload SpotBugs report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: spotbugs-report-${{ matrix.java-version }}
+        path: |
+          **/target/spotbugs*.xml
+          **/target/spotbugsXml.xml
+        retention-days: 7
+
+    - name: Publish root security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-root
+        path: target/
+        retention-days: 7
+
+    - name: Publish privacy module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-privacy
+        path: privacy/target/
+        retention-days: 7
+
+    - name: Publish utils module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-utils
+        path: utils/target/
+        retention-days: 7
+
+    - name: Publish exception module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-exception
+        path: exception/target/
+        retention-days: 7
+
+    - name: Publish audit module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-audit
+        path: audit/target/
+        retention-days: 7
+
+    - name: Publish jdempotent module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-jdempotent
+        path: jdempotent/target/
+        retention-days: 7
+
+    - name: Publish security module security report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-report-security
+        path: security/target/
+        retention-days: 7
