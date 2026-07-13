@@ -137,10 +137,27 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Import order matters: in Maven the first imported BOM to declare a version wins.
+                 spring-data-bom and jackson-bom are imported BEFORE spring-boot-dependencies so their
+                 pinned versions override the ones Boot would otherwise manage. -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring-framework-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-bom</artifactId>
+                <version>${spring-data-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -150,11 +167,6 @@
                 <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-bom</artifactId>
-                <version>${spring-data-bom.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -169,12 +181,6 @@
                 <version>${spring-kafka-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>tools.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson-bom.version}</version>
-                <type>pom</type>
             </dependency>
 
             <!-- utils -->
