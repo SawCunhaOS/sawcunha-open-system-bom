@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "labels": ["dependencies"],
+  "maven": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "Group the whole Spring ecosystem into a single PR (Boot, Framework, Cloud, Data, Kafka).",
+      "matchManagers": ["maven"],
+      "matchPackagePrefixes": ["org.springframework"],
+      "groupName": "spring ecosystem",
+      "commitMessageTopic": "Spring ecosystem"
+    },
+    {
+      "description": "Group testing libraries together.",
+      "matchManagers": ["maven"],
+      "matchPackagePrefixes": [
+        "org.junit",
+        "org.mockito",
+        "org.testcontainers",
+        "org.wiremock",
+        "io.rest-assured"
+      ],
+      "groupName": "test dependencies"
+    },
+    {
+      "description": "Group build/enforcer/analysis plugins.",
+      "matchManagers": ["maven"],
+      "matchPackagePrefixes": [
+        "org.apache.maven.plugins",
+        "org.jacoco",
+        "org.owasp",
+        "org.sonatype.central"
+      ],
+      "groupName": "build plugins"
+    }
+  ]
+}
