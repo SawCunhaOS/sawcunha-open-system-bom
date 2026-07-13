@@ -1,133 +1,90 @@
 # SCOS BOM (SawCunha Open System)
 
-[![Build & Test](https://github.com/sawcunha/sawcunha-open-system-bom/actions/workflows/build.yml/badge.svg)](https://github.com/sawcunha/sawcunha-open-system-bom/actions/workflows/build.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.sawcunha/scos-bom.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.sawcunha/scos-bom)
+[![Build & Test](https://github.com/SawCunhaOS/sawcunha-open-system-bom/actions/workflows/build.yml/badge.svg)](https://github.com/SawCunhaOS/sawcunha-open-system-bom/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/br.com.sawcunhaos/scos-bom.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/br.com.sawcunhaos/scos-bom)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Java 25+](https://img.shields.io/badge/Java-25%2B-orange.svg)](https://www.java.com)
 [![Maven 3.9.12+](https://img.shields.io/badge/Maven-3.9.12%2B-blue.svg)](https://maven.apache.org/)
 
 Official Bill of Materials (BOM) that standardizes and aligns dependency versions across all SCOS projects.
 
+- **Coordinates:** `br.com.sawcunhaos:scos-bom`
+- **Packaging:** `pom` (no sources — this repository ships only dependency and build governance)
+- **Organization:** [SawCunhaOS](https://github.com/SawCunhaOS)
+
 ---
 
 ## 📦 Overview
 
-The **SCOS BOM** provides centralized dependency management for all projects within the SawCunha Open System ecosystem.
+The **SCOS BOM** provides centralized dependency management and build conventions for all projects within
+the SawCunha Open System ecosystem.
 
-By importing this BOM, applications and libraries can:
+By adopting this BOM, applications and libraries can:
 
 * Use consistent, tested dependency versions across all modules
 * Reduce version conflicts (dependency hell)
 * Simplify dependency upgrades and maintenance
-* Ensure compatibility across the entire SCOS ecosystem
-* Align with SCOS platform standards and best practices
-* Benefit from enterprise-grade dependency curation
+* Inherit SCOS build conventions (enforcer, compiler, analysis) when used as a `<parent>`
 
-This project follows semantic versioning and is designed for production use with Maven and Gradle builds.
+This project follows semantic versioning and is designed for production use.
 
 ---
 
-## 📋 Supported Technology Stack
+## 🔖 Source of truth for versions
 
-### Core Platforms
-- **Java**: 25 or higher (LTS)
-- **Build Tools**: Maven 3.9.12+
-- **License**: Apache License 2.0
+**This README does not list managed versions.** Hardcoded version tables drift out of sync with the POM
+and become misleading. The single source of truth is [`pom.xml`](pom.xml).
 
-### Spring Ecosystem (Current Versions)
+To see exactly what a given release manages, resolve the effective POM:
 
-| Component            | Version  | Notes                                |
-|----------------------|----------|--------------------------------------|
-| **Spring Boot**      | 4.0.2    | Latest stable release, Java 25 ready |
-| **Spring Framework** | 7.0.3    | Jakarta EE, Virtual Threads ready    |
-| **Spring Cloud**     | 2025.1.1 | Latest cloud-native features         |
-| **Spring Data**      | 2025.1.2 | JPA, MongoDB, Redis support          |
-| **Spring Kafka**     | 4.0.2    | Event streaming integration          |
+```bash
+# From a checkout of this repo (or a consumer project):
+mvn help:effective-pom
 
-### Database & Persistence
+# A single managed version, e.g. Spring Boot:
+mvn help:evaluate -Dexpression=spring-boot-dependencies.version -q -DforceStdout
+```
 
-| Component                  | Version     | Purpose                         |
-|----------------------------|-------------|---------------------------------|
-| **PostgreSQL JDBC**        | 42.7.9      | PostgreSQL relational database  |
-| **MySQL Connector**        | 9.5.0       | MySQL relational database       |
-| **Redis (Jedis)**          | 7.2.0       | In-memory data cache            |
-| **Hibernate ORM**          | 7.2.0.Final | Object-relational mapping       |
-| **JPA (Jakarta)**          | 6.x         | Standard persistence API        |
-| **Liquibase**              | 5.0.1       | Database migration & versioning |
-| **QueryDSL**               | 7.1         | Type-safe query builder         |
-| **ShedLock**               | 7.3.0       | Distributed task scheduling     |
-| **Spatial** (JTS/GeoTools) | 1.20.0+     | Geospatial support              |
+The managed versions are declared as `*.version` properties at the top of [`pom.xml`](pom.xml) and are
+kept up to date automatically by Renovate (see [`renovate.json`](renovate.json)).
 
-### Serialization & Data Formats
-
-| Component     | Version  | Purpose                              |
-|---------------|----------|--------------------------------------|
-| **Jackson**   | 3.0.4    |  JSON/XML binding (with all modules) |
-| **GSON**      | 2.13.2   | JSON serialization alternative       |
-| **SnakeYAML** | 2.5      | YAML configuration parsing           |
-| **org.json**  | 20250517 | JSON processing utility              |
-
-### Testing & Quality Assurance
-
-| Component          | Version        | Purpose                           |
-|--------------------|----------------|-----------------------------------|
-| **JUnit**          | 6.0.2          | Unit testing framework            |
-| **Mockito**        | 5.21.0         | Mock object framework             |
-| **TestContainers** | 2.0.3          | Container-based integration tests |
-| **WireMock**       | 3.13.2 / 4.0.8 | HTTP API mocking                  |
-| **REST Assured**   | 6.0.0          | REST API testing                  |
-| **JaCoCo**         | 0.8.13         | Code coverage measurement         |
-
-### Utilities & Libraries
-
-| Component               | Version    | Purpose                    |
-|-------------------------|------------|----------------------------|
-| **Project Lombok**      | 1.18.42    | Boilerplate code reduction |
-| **MapStruct**           | 1.6.3      | Bean mapping processor     |
-| **Apache Commons IO**   | 2.21.0     | I/O utilities              |
-| **Apache Commons Lang** | 3.20.0     | Language utilities         |
-| **Google Guava**        | 33.5.0-jre | Collections & utilities    |
-| **Reflections**         | 0.10.2     | Reflection utilities       |
-| **Caffeine**            | 3.2.3      | High-performance cache     |
-
-### Logging & Monitoring
-
-| Component            | Version      | Purpose                     |
-|----------------------|--------------|-----------------------------|
-| **SLF4J**            | (via Spring) | Logging facade              |
-| **Logback**          | (via Spring) | Logging implementation      |
-| **GELF Encoder**     | 6.1.2        | Graylog Extended Log Format |
-| **Logstash Encoder** | 9.0          | ELK Stack integration       |
-
-### Security & Cryptography
-
-| Component         | Version  | Purpose               |
-|-------------------|----------|-----------------------|
-| **Bouncy Castle** | 1.83     | Cryptography provider |
-| **Jasypt**        | 4.0.3    | Property encryption   |
-
-### AOP & HTTP
-
-| Component     | Version  | Purpose                     |
-|---------------|----------|-----------------------------|
-| **AspectJ**   | 1.9.25.1 | Aspect-oriented programming |
-| **OpenFeign** | 13.6     | Declarative HTTP client     |
+> Optional: a release step could regenerate a version table from `mvn help:evaluate` per property. If that
+> is ever added to `scripts/release.sh`, document it here so the table has a clear, automated origin.
 
 ---
 
 ## 🚀 Usage
 
-### Maven
+There are **two distinct ways** to consume this BOM. They are not equivalent.
 
-Import the BOM in your `dependencyManagement` section of `pom.xml`:
+### A) As a `<parent>` — versions **and** build conventions
+
+Use this when your project is a first-class SCOS module and wants the SCOS build baseline: the enforcer
+rules (Maven/Java floor, duplicate/upper-bound checks), the compiler configuration (`release`, Lombok +
+MapStruct processors), and the `analyze` profile (JaCoCo, dependency-check, Checkstyle).
+
+```xml
+<parent>
+  <groupId>br.com.sawcunhaos</groupId>
+  <artifactId>scos-bom</artifactId>
+  <version>1.2.0</version> <!-- última estável; confira o badge do Maven Central -->
+  <relativePath/>
+</parent>
+```
+
+### B) Via `<scope>import</scope>` — versions **only**
+
+Use this when you only want aligned dependency versions and want to keep full control of your own build.
+**Importing a BOM brings only `dependencyManagement`. It does NOT bring plugins, plugin configuration, or
+profiles** — so the enforcer, compiler and `analyze` conventions are *not* inherited this way.
 
 ```xml
 <dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>io.github.sawcunha</groupId>
+      <groupId>br.com.sawcunhaos</groupId>
       <artifactId>scos-bom</artifactId>
-      <version>1.0.0</version>
+      <version>1.2.0</version> <!-- última estável; confira o badge do Maven Central -->
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -135,298 +92,166 @@ Import the BOM in your `dependencyManagement` section of `pom.xml`:
 </dependencyManagement>
 ```
 
-Then declare dependencies **without versions** (they will be managed by BOM):
+Then declare dependencies **without versions** (they are managed by the BOM):
 
 ```xml
 <dependencies>
-  <!-- Spring Boot Starter Web -->
   <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
   </dependency>
-
-  <!-- PostgreSQL Driver -->
   <dependency>
     <groupId>org.postgresql</groupId>
     <artifactId>postgresql</artifactId>
   </dependency>
-
-  <!-- Jackson for JSON -->
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-  </dependency>
-
-  <!-- Testing -->
-  <dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <scope>test</scope>
-  </dependency>
 </dependencies>
 ```
 
----
-
-### Gradle (Kotlin DSL)
+### Gradle (import only)
 
 ```kotlin
 dependencyManagement {
     imports {
-        mavenBom("io.github.sawcunha:scos-bom:1.0.0")
+        mavenBom("br.com.sawcunhaos:scos-bom:1.2.0")
     }
-}
-
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.postgresql:postgresql")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 ```
 
 ---
 
-### Gradle (Groovy DSL)
+## 🔁 Coordinate migration
 
-```groovy
-dependencyManagement {
-    imports {
-        mavenBom 'io.github.sawcunha:scos-bom:1.0.0'
-    }
-}
+The published coordinates are **`br.com.sawcunhaos:scos-bom`**.
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.postgresql:postgresql'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
+If you previously referenced the old coordinates `io.github.sawcunha:scos-bom` (or the org `sawcunha`
+instead of `SawCunhaOS`), update your `<groupId>` to `br.com.sawcunhaos`. The artifactId (`scos-bom`) is
+unchanged. Older artifacts under the previous groupId, if any exist on Central, are not maintained.
+
+---
+
+## 🧭 Branching & release model
+
+This is why a `release/x.y.z` branch carries an `x.y.z-**SNAPSHOT**` version: the branch holds
+work-in-progress toward that release, and the concrete release version is only stamped at close time.
+
+```
+develop ──────────────────────────────────────────────►  (next major, x.0.0-SNAPSHOT)
+   │
+   └── release/1.3.0  ── carries 1.3.0-SNAPSHOT ──► close (scripts/release.sh)
+                                                      │
+                                                      ├─ strips -SNAPSHOT → 1.3.0
+                                                      ├─ git tag 1.3.0
+                                                      ├─ deploy to Maven Central
+                                                      └─ merge-back to develop, open next
 ```
 
----
+- **`develop`** — integration branch; always a SNAPSHOT of the next line.
+- **`release/x.y.z`** — a minor being stabilized; SNAPSHOT until closed.
+- **`fix/x.y.z`** — a patch line branched from its release.
+- **Closing** is done by [`scripts/release.sh`](scripts/release.sh) (`major|minor|fix`): it removes the
+  `-SNAPSHOT`, tags, deploys, merges back, and opens the next SNAPSHOT.
 
-## 🧩 What This BOM Manages
-
-This BOM manages dependencies in these categories:
-
-### Spring Ecosystem
-- Spring Boot (core, starters)
-- Spring Framework
-- Spring Cloud (microservices patterns)
-- Spring Data (database access)
-- Spring Kafka (event streaming)
-
-### Databases & Persistence
-- JDBC drivers (PostgreSQL, MySQL)
-- Redis client
-- Hibernate ORM
-- JPA/Jakarta EE
-- Migration tools (Liquibase)
-- Query builders (QueryDSL)
-- Spatial/GIS libraries
-
-### Testing & Quality
-- JUnit 5 & 6
-- Mocking frameworks
-- Integration test containers
-- HTTP mocking (WireMock)
-- Code coverage (JaCoCo)
-
-### Serialization
-- Jackson (primary, all modules)
-- GSON alternative
-- YAML/JSON parsers
-
-### Development Tools
-- Lombok (boilerplate reduction)
-- MapStruct (bean mapping)
-- Apache Commons libraries
-- Google Guava
-
-### Logging & Monitoring
-- SLF4J/Logback
-- ELK Stack integrations
-- Centralized logging (GELF)
-
-### Security & Cryptography
-- Bouncy Castle
-- Jasypt encryption
+Snapshots are published continuously by [`publish-snapshot.yml`](.github/workflows/publish-snapshot.yml)
+after a green build on `develop`, `release/*` and `fix/*`.
 
 ---
 
-## 📊 Compatibility Matrix
+## 🧰 Enforcer
 
-| SCOS BOM Version   | Java  | Maven   | Spring Boot   | Spring Framework   | Spring Cloud   |
-|--------------------|-------|---------|---------------|--------------------|----------------|
-| **1.0.x**          | 25+   | 3.9.12+ | 4.0.2         | 7.0.3              | 2025.1.1       |
+The BOM acts as the convergence authority for projects that use it as a `<parent>`. The default
+`enforce-maven` execution runs on every `verify`:
+
+- `requireMavenVersion` — Maven 3.9.12+
+- `requireJavaVersion` — Java 25+
+- `banDuplicatePomDependencyVersions` — no duplicated managed versions
+- `requireUpperBoundDeps` — a transitive is never silently downgraded
+
+A stricter, **opt-in** profile is available:
+
+```bash
+mvn -Pstrict-convergence verify
+```
+
+`strict-convergence` adds `dependencyConvergence`, which fails the build on *any* version divergence in the
+dependency graph. It is intentionally **off by default** because it is noisy on real applications — enable
+it deliberately (e.g. a periodic hygiene job) rather than on every build.
+
+---
+
+## 🔍 Analysis profile
+
+`mvn -Panalyze verify` enables:
+
+- **JaCoCo** — coverage report + a line-coverage gate. Minimum is `jacoco.line.minimum` (default `0.00`
+  here on the BOM; consumers raise it) and the gate only fails the build when `-Djacoco.halt=true`.
+- **OWASP dependency-check** — `failBuildOnCVSS=7`, `nvdApiKey` from the `NVD_API_KEY` env var, and a
+  suppression file at `dependency-check.suppressionFile` (default `etc/dependency-check/suppressions.xml`).
+- **Checkstyle** — ruleset loaded from the shared `scos-build-config` artifact
+  (`configLocation=checkstyle/checkstyle.xml`), so every SCOS project shares one config instead of a path
+  baked into each repo.
+
+> **`scos-build-config`** is a small sibling artifact (`br.com.sawcunhaos:scos-build-config`) that packages
+> `checkstyle/checkstyle.xml` and `dependency-check/suppressions.xml` under `src/main/resources`. It is kept
+> as a separate repository so the BOM stays single-module. Checkstyle is wired to consume it but is not run
+> in this repo's CI; publish `scos-build-config` before enabling `checkstyle:check` in a consumer.
+
+---
+
+## 📊 Minimum compatibility matrix
+
+Minimum/tested baseline per BOM line. Exact patch versions live in [`pom.xml`](pom.xml); this table tracks
+only the low-churn majors used to decide compatibility.
+
+| SCOS BOM | Java | Maven    | Spring Boot | scos-foundation |
+|----------|------|----------|-------------|-----------------|
+| **1.3.x**| 25+  | 3.9.12+  | 4.1.x       | 1.3.x           |
 
 **Notes:**
-- Each BOM version represents a tested and compatible set of dependencies
-- Mixing versions from different BOM releases is discouraged
-- Java 25 is LTS (Long Term Support) from Oracle
-- All versions are production-ready
+- Each BOM line represents a tested, compatible set of dependencies.
+- Mixing dependencies from different BOM lines is discouraged.
+- `scos-foundation` aligns its minor to the BOM line; see the scos-foundation releases for exact versions.
 
 ---
 
 ## 🔢 Versioning
 
-This project follows **Semantic Versioning (SemVer)**:
+Semantic Versioning:
 
 ```
 1.2.3
-│ │ │
-│ │ └─ PATCH: Dependency updates, security fixes (1.2.0 → 1.2.1)
-│ └──── MINOR: New dependencies, backward-compatible (1.2.0 → 1.3.0)
-└────── MAJOR: Breaking changes in managed dependencies (1.2.0 → 2.0.0)
+│ │ └─ PATCH: dependency bumps, security fixes
+│ └──── MINOR: new managed dependencies, backward-compatible
+└────── MAJOR: breaking changes in managed dependencies
 ```
-
-### Release Process
-
-1. **Development**: Changes merged to `develop` branch
-2. **Tag Creation**: Maintainers create git tag (e.g., `v1.0.0`)
-3. **CI/CD Triggered**: GitHub Actions automatically:
-   - Builds the package
-   - Signs artifacts with GPG
-   - Publishes to Maven Central
-   - Creates GitHub Release with notes
-4. **Available**: Published within minutes to Maven Central
-
----
-
-## 🏗️ Project Standards
-
-### Build Requirements
-- **Java**: 25 or higher
-- **Maven**: 3.9.12 or higher
-- **Build Type**: Maven (POM-only, no sources)
-
-### Code Quality
-- Code coverage via JaCoCo
-- Static analysis via Checkstyle
-- Dependency vulnerability checks (OWASP)
-- Automatic GPG code signing for releases
-
-### CI/CD Pipeline
-- **Build Workflow**: Tests on every push/PR
-- **Security Checks**: Dependency and code quality analysis
-- **Release Workflow**: Automated Maven Central publishing on git tags
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Whether it's:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch flow and how to propose a version bump. Report
+security issues via [SECURITY.md](SECURITY.md). Notable changes are tracked in [CHANGELOG.md](CHANGELOG.md).
 
-- Adding new dependencies
-- Updating versions
-- Improving documentation
-- Reporting issues
-- Suggesting enhancements
+Before submitting a change:
 
-**Before submitting a change:**
-
-1. **Open an issue** describing your proposal
-2. **Discuss compatibility** impact and justification
-3. **Update documentation** if adding/changing dependencies
-4. **Verify builds pass** locally: `mvn clean verify`
-5. **Follow commit conventions**: See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Development Setup
-
-```bash
-# Clone repository
-git clone https://github.com/SawCunhaOS/sawcunha-open-system-bom.git
-cd sawcunha-open-system-bom
-
-# Build
-mvn clean install
-
-# Run checks
-mvn -Panalyze clean verify
-
-# View contribution guidelines
-cat CONTRIBUTING.md
-```
-
-For detailed contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+1. Open an issue describing the proposal and its compatibility impact.
+2. Verify locally: `mvn -B verify` (and `mvn -B -Panalyze verify` for the full analysis).
+3. Follow the commit conventions described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **Apache License 2.0**.
-
-You are free to:
-- ✅ Use commercially
-- ✅ Modify the code
-- ✅ Distribute derivatives
-- ✅ Use privately
-
-Provided that you:
-- 📝 Include a copy of the license
-- 📝 State significant changes made
-- 📝 Include a NOTICE file
-
-See the [LICENSE](LICENSE) file for complete details.
+Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
 
 ---
 
 ## 🧭 About SawCunha Open System (SCOS)
 
-SawCunha Open System is an open ecosystem of modular, production-grade software components designed for:
+SawCunha Open System is an open ecosystem of modular, production-grade software components. The SCOS BOM is
+the foundational dependency and build standard for all SCOS projects.
 
-- **Reliability**: Enterprise-grade stability and compatibility
-- **Interoperability**: Seamless integration between modules
-- **Maintainability**: Long-term support and upgrade paths
-- **Innovation**: Modern frameworks and best practices
+## 🔗 Quick links
 
-The SCOS BOM serves as the foundational dependency standard for all SCOS projects.
-
----
-
-## ⭐ Support
-
-If this project is useful to you, please consider:
-
-- ⭐ Starring the repository on GitHub
-- 🐛 Reporting bugs and issues
-- 💡 Suggesting improvements
-- 📢 Sharing with your team
-
-Your support helps maintain and improve this project!
-
----
-
-## 📫 Contact & Resources
-
-### Documentation
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [CHANGELOG.md](CHANGELOG.md) - Version history and changes
-- [Maven Central](https://central.sonatype.com/artifact/io.github.sawcunha/scos-bom) - Repository info
-
-### Community
-- [GitHub Issues](https://github.com/sawcunha/sawcunha-open-system-bom/issues) - Report bugs, request features
-- [GitHub Discussions](https://github.com/sawcunha/sawcunha-open-system-bom/discussions) - Ask questions
-- [GitHub Releases](https://github.com/sawcunha/sawcunha-open-system-bom/releases) - Version history
-
-### Maintained by
-The **SawCunha Open System Community**
-
-For questions or support, open an issue on GitHub or join discussions.
-
----
-
-## 🔗 Quick Links
-
-- **Maven Central**: https://central.sonatype.com/artifact/io.github.sawcunha/scos-bom
-- **GitHub Repository**: https://github.com/sawcunha/sawcunha-open-system-bom
-- **GitHub Organization**: https://github.com/sawcunha
-- **License**: Apache 2.0
-
----
-
-**Last Updated**: February 2024  
-**Current Stable Version**: 1.0.0
+- **Maven Central:** https://central.sonatype.com/artifact/br.com.sawcunhaos/scos-bom
+- **Repository:** https://github.com/SawCunhaOS/sawcunha-open-system-bom
+- **Organization:** https://github.com/SawCunhaOS
