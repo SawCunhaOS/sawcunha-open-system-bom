@@ -6,7 +6,7 @@
 
     <groupId>br.com.sawcunhaos</groupId>
     <artifactId>scos-bom</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SCOS BOM</name>
@@ -62,8 +62,7 @@
     </ciManagement>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -83,16 +82,22 @@
 
         <!-- Build Plugins -->
         <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
+        <scos-build-config.version>1.0.0</scos-build-config.version>
+
+        <!-- analyze profile knobs (overridable by consumers and CI) -->
+        <jacoco.line.minimum>0.00</jacoco.line.minimum>
+        <jacoco.halt>false</jacoco.halt>
+        <dependency-check.suppressionFile>${project.basedir}/etc/dependency-check/suppressions.xml</dependency-check.suppressionFile>
 
         <!-- Utilities & Annotations -->
-        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.46</lombok.version>
         <gson.version>2.14.0</gson.version>
 
         <!-- Database & ORM -->
         <postgresql.version>42.7.11</postgresql.version>
         <liquibase.version>5.0.3</liquibase.version>
-        <op_querydsl.version>7.1</op_querydsl.version>
+        <querydsl.version>7.1</querydsl.version>
         <mysql-connector-j.version>9.7.0</mysql-connector-j.version>
         <hibernate-spatial.version>7.4.1.Final</hibernate-spatial.version>
         <jts-core.version>1.20.0</jts-core.version>
@@ -137,10 +142,27 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Import order matters: in Maven the first imported BOM to declare a version wins.
+                 spring-data-bom and jackson-bom are imported BEFORE spring-boot-dependencies so their
+                 pinned versions override the ones Boot would otherwise manage. -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring-framework-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-bom</artifactId>
+                <version>${spring-data-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -150,11 +172,6 @@
                 <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-bom</artifactId>
-                <version>${spring-data-bom.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -170,12 +187,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>tools.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson-bom.version}</version>
-                <type>pom</type>
-            </dependency>
 
             <!-- utils -->
             <dependency>
@@ -186,7 +197,7 @@
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
-                <version>${org.mapstruct.version}</version>
+                <version>${mapstruct.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -233,18 +244,18 @@
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-jpa</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-apt</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-jpa-spring</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.antlr</groupId>
@@ -390,7 +401,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- ...existing code... -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -400,6 +410,22 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.15.0</version>
+                    <configuration>
+                        <!-- Release level comes from the maven.compiler.release property. -->
+                        <encoding>UTF-8</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -416,19 +442,12 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.8</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.7.0</version>
-                </plugin>
-                <!-- ...existing code... -->
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -443,6 +462,10 @@
                                 <requireJavaVersion>
                                     <version>[25,)</version>
                                 </requireJavaVersion>
+                                <!-- BOM authority: no duplicated managed versions, and consumers
+                                     must not silently downgrade a transitive to a lower version. -->
+                                <banDuplicatePomDependencyVersions/>
+                                <requireUpperBoundDeps/>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -452,24 +475,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <source>25</source>
-                    <target>25</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -514,7 +519,9 @@
                         </executions>
                     </plugin>
 
-                    <!-- GPG Signing -->
+                    <!-- GPG Signing. Passphrase and pinentry/loopback mechanics live in the CI
+                         (.github/actions/setup-gpg exports MAVEN_GPG_PASSPHRASE and configures the
+                         gpg-agent for loopback), so the POM only declares the sign execution. -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -526,15 +533,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <passphrase>${env.GPG_PASSPHRASE}</passphrase>
-                                    <gpgArguments>
-                                        <arg>--batch</arg>
-                                        <arg>--no-tty</arg>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -577,12 +575,42 @@
                                     <goal>report</goal>
                                 </goals>
                             </execution>
+                            <!-- Line-coverage gate. Minimum is a property (0.00 here on the BOM;
+                                 consumers raise it) and haltOnFailure is toggled by CI via -Djacoco.halt=true. -->
+                            <execution>
+                                <id>check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <haltOnFailure>${jacoco.halt}</haltOnFailure>
+                                    <rules>
+                                        <rule>
+                                            <element>BUNDLE</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>LINE</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>${jacoco.line.minimum}</minimum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
                         <version>12.2.2</version>
+                        <configuration>
+                            <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <suppressionFiles>
+                                <suppressionFile>${dependency-check.suppressionFile}</suppressionFile>
+                            </suppressionFiles>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
@@ -594,10 +622,48 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>3.6.0</version>
+                        <version>${checkstyle-maven-plugin.version}</version>
                         <configuration>
-                            <configLocation>${basedir}/etc/devops/checkstyle/checkstyle.xml</configLocation>
+                            <!-- Ruleset comes from the shared scos-build-config artifact (sibling repo),
+                                 loaded from the plugin classpath, so every SCOS project shares one config
+                                 instead of a path baked into each repo. -->
+                            <configLocation>checkstyle/checkstyle.xml</configLocation>
                         </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>br.com.sawcunhaos</groupId>
+                                <artifactId>scos-build-config</artifactId>
+                                <version>${scos-build-config.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Opt-in strict convergence. dependencyConvergence is noisy on real applications, so it is
+             NOT active by default; enable with -Pstrict-convergence. See README ("Enforcer") for when. -->
+        <profile>
+            <id>strict-convergence</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-convergence</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <dependencyConvergence/>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

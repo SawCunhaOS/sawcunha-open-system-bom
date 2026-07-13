@@ -2,224 +2,41 @@ name: Build & Test
 
 on:
   push:
-    branches: [ '**' ]  # Run on any branch push
-  pull_request:         # Run on any PR regardless of target branch
+    branches: [ '**' ]  # roda em qualquer push de branch
+  pull_request:         # roda em qualquer PR, independente do target
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    strategy:
-      matrix:
-        java-version: [ '25' ]
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Full history for git describe
-        token: ${{ secrets.PAT_TOKEN }}
+      # Sem token privilegiado: build de PR nao precisa (e nao deve) usar o PAT.
+      # A publicacao de snapshot (publish-snapshot.yml) mantem o token dela.
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # historico completo para git describe
 
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ matrix.java-version }}
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Cache Maven packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+      # Este repo e um BOM (packaging pom, sem codigo): nada para compilar,
+      # testar ou empacotar. O CI valida o modelo, roda o enforcer no verify
+      # e checa vulnerabilidades nas versoes gerenciadas.
+      - name: Validate pom.xml
+        run: mvn -B validate
 
-    - name: Validate pom.xml
-      run: mvn -B validate
+      - name: Enforce build rules
+        run: mvn -B verify
 
-    - name: Compile
-      run: mvn -B clean compile -DskipTests
-
-    - name: Run tests
-      run: mvn -B test
-
-    - name: Build package
-      run: mvn -B package -DskipTests
-
-    - name: Archive root artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-root-${{ matrix.java-version }}
-        path: target/
-        retention-days: 7
-
-    - name: Archive privacy module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-privacy-${{ matrix.java-version }}
-        path: privacy/target/
-        retention-days: 7
-
-    - name: Archive utils module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-utils-${{ matrix.java-version }}
-        path: utils/target/
-        retention-days: 7
-
-    - name: Archive exception module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-exception-${{ matrix.java-version }}
-        path: exception/target/
-        retention-days: 7
-
-    - name: Archive audit module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-audit-${{ matrix.java-version }}
-        path: audit/target/
-        retention-days: 7
-
-    - name: Archive jdempotent module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-jdempotent-${{ matrix.java-version }}
-        path: jdempotent/target/
-        retention-days: 7
-
-    - name: Archive security module artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: maven-build-security-${{ matrix.java-version }}
-        path: security/target/
-        retention-days: 7
-
-  security-check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: build
-
-    strategy:
-      matrix:
-        java-version: [ '25' ]
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ matrix.java-version }}
-        distribution: 'temurin'
-        cache: maven
-
-    - name: Cache Maven packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
-    # Compile + test with the JaCoCo agent so SpotBugs has classes to analyze
-    # and jacoco.exec exists for the coverage report. A fresh checkout has neither.
-    - name: Compile and run tests (coverage agent)
-      run: mvn -B -Panalyze test
-
-    - name: Run dependency check
-      run: mvn -B -Panalyze dependency-check:check
-      continue-on-error: true
-
-    - name: Run checkstyle
-      run: mvn -B -Panalyze checkstyle:check
-
-    - name: Run SpotBugs
-      run: mvn -B -Panalyze spotbugs:check
-      continue-on-error: false
-
-    - name: Generate JaCoCo report
-      if: always()
-      run: mvn -B -Panalyze jacoco:report
-
-    - name: Upload JaCoCo report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: jacoco-report-${{ matrix.java-version }}
-        path: '**/target/site/jacoco/'
-        retention-days: 7
-
-    - name: Upload SpotBugs report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: spotbugs-report-${{ matrix.java-version }}
-        path: |
-          **/target/spotbugs*.xml
-          **/target/spotbugsXml.xml
-        retention-days: 7
-
-    - name: Publish root security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-root
-        path: target/
-        retention-days: 7
-
-    - name: Publish privacy module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-privacy
-        path: privacy/target/
-        retention-days: 7
-
-    - name: Publish utils module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-utils
-        path: utils/target/
-        retention-days: 7
-
-    - name: Publish exception module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-exception
-        path: exception/target/
-        retention-days: 7
-
-    - name: Publish audit module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-audit
-        path: audit/target/
-        retention-days: 7
-
-    - name: Publish jdempotent module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-jdempotent
-        path: jdempotent/target/
-        retention-days: 7
-
-    - name: Publish security module security report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-report-security
-        path: security/target/
-        retention-days: 7
+      # Precisa de NVD_API_KEY (secret) para consultar a base de CVEs.
+      # Sem continue-on-error: falha de vulnerabilidade quebra o build.
+      - name: OWASP dependency-check
+        run: mvn -B -Panalyze dependency-check:check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}

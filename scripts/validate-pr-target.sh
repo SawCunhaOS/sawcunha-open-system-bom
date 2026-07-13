@@ -3,7 +3,7 @@
 
 #
 # /*
-#  * Copyright 2026 SawCunha Open System - SawCunhaOS-Foundation
+#  * Copyright 2026 SawCunha Open System - sawcunha-open-system-bom
 #  *
 #  * Licensed under the Apache License, Version 2.0 (the "License");
 #  * you may not use this file except in compliance with the License.
