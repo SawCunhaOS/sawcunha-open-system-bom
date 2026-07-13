@@ -74,10 +74,10 @@
         <spring-data-bom.version>2026.0.0</spring-data-bom.version>
 
         <!-- Serialization -->
-        <jackson-bom.version>3.2.0</jackson-bom.version>
+        <jackson-bom.version>3.2.1</jackson-bom.version>
 
         <!-- Testing -->
-        <junit-bom.version>6.1.0</junit-bom.version>
+        <junit-bom.version>6.1.1</junit-bom.version>
         <testcontainers-bom.version>2.0.5</testcontainers-bom.version>
 
         <!-- Build Plugins -->
@@ -95,20 +95,19 @@
         <gson.version>2.14.0</gson.version>
 
         <!-- Database & ORM -->
-        <postgresql.version>42.7.11</postgresql.version>
+        <postgresql.version>42.7.13</postgresql.version>
         <liquibase.version>5.0.3</liquibase.version>
-        <querydsl.version>7.1</querydsl.version>
+        <querydsl.version>7.4.0</querydsl.version>
         <mysql-connector-j.version>9.7.0</mysql-connector-j.version>
-        <hibernate-spatial.version>7.4.1.Final</hibernate-spatial.version>
+        <hibernate-spatial.version>7.4.4.Final</hibernate-spatial.version>
         <jts-core.version>1.20.0</jts-core.version>
-        <hypersistence-utils-hibernate-71.version>3.15.3</hypersistence-utils-hibernate-71.version>
+        <hypersistence-utils-hibernate-71.version>3.15.4</hypersistence-utils-hibernate-71.version>
 
         <!-- Testing Tools -->
         <mockito.version>5.23.0</mockito.version>
 
         <!-- Configuration & Security -->
         <snakeyaml.version>2.6</snakeyaml.version>
-        <json.version>20260522</json.version>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
         <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
         <bcprov-jdk18on.version>1.84</bcprov-jdk18on.version>
@@ -127,17 +126,21 @@
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 
         <!-- Caching & Data -->
-        <jedis.version>7.5.2</jedis.version>
+        <jedis.version>7.5.3</jedis.version>
         <shedlock-spring.version>7.7.0</shedlock-spring.version>
 
         <!-- AOP & HTTP -->
         <aspectjweaver.version>1.9.25.1</aspectjweaver.version>
-        <feign-okhttp.version>13.12</feign-okhttp.version>
+        <feign-okhttp.version>13.13</feign-okhttp.version>
 
         <!-- Testing REST APIs -->
         <spring-mock-mvc.version>6.0.0</spring-mock-mvc.version>
         <wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
+
+        <!--grpc-->
+        <grpc.version>1.81.0</grpc.version>
+        <protobuf.version>4.34.2</protobuf.version>
     </properties>
 
     <dependencyManagement>
@@ -188,6 +191,21 @@
                 <scope>import</scope>
             </dependency>
 
+
+            <!-- grpc -->
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${grpc.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
+            </dependency>
+
             <!-- utils -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -213,11 +231,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>${json.version}</version>
             </dependency>
 
             <!-- Database -->
@@ -250,7 +263,6 @@
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-apt</artifactId>
                 <version>${querydsl.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
@@ -260,6 +272,10 @@
                     <exclusion>
                         <groupId>org.antlr</groupId>
                         <artifactId>antlr4-runtime</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jakarta.inject</groupId>
+                        <artifactId>jakarta.inject-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -561,7 +577,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.14</version>
+                        <version>0.8.15</version>
                         <executions>
                             <execution>
                                 <id>default-prepare-agent</id>
