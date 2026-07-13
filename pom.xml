@@ -82,6 +82,12 @@
 
         <!-- Build Plugins -->
         <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
+        <scos-build-config.version>1.0.0</scos-build-config.version>
+
+        <!-- analyze profile knobs (overridable by consumers and CI) -->
+        <jacoco.line.minimum>0.00</jacoco.line.minimum>
+        <jacoco.halt>false</jacoco.halt>
+        <dependency-check.suppressionFile>${project.basedir}/etc/dependency-check/suppressions.xml</dependency-check.suppressionFile>
 
         <!-- Utilities & Annotations -->
         <mapstruct.version>1.6.3</mapstruct.version>
@@ -569,12 +575,42 @@
                                     <goal>report</goal>
                                 </goals>
                             </execution>
+                            <!-- Line-coverage gate. Minimum is a property (0.00 here on the BOM;
+                                 consumers raise it) and haltOnFailure is toggled by CI via -Djacoco.halt=true. -->
+                            <execution>
+                                <id>check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <haltOnFailure>${jacoco.halt}</haltOnFailure>
+                                    <rules>
+                                        <rule>
+                                            <element>BUNDLE</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>LINE</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>${jacoco.line.minimum}</minimum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
                         <version>12.2.2</version>
+                        <configuration>
+                            <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <suppressionFiles>
+                                <suppressionFile>${dependency-check.suppressionFile}</suppressionFile>
+                            </suppressionFiles>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
@@ -586,10 +622,20 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>3.6.0</version>
+                        <version>${checkstyle-maven-plugin.version}</version>
                         <configuration>
-                            <configLocation>${basedir}/etc/devops/checkstyle/checkstyle.xml</configLocation>
+                            <!-- Ruleset comes from the shared scos-build-config artifact (sibling repo),
+                                 loaded from the plugin classpath, so every SCOS project shares one config
+                                 instead of a path baked into each repo. -->
+                            <configLocation>checkstyle/checkstyle.xml</configLocation>
                         </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>br.com.sawcunhaos</groupId>
+                                <artifactId>scos-build-config</artifactId>
+                                <version>${scos-build-config.version}</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>

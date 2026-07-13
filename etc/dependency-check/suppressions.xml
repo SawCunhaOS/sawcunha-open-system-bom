@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OWASP dependency-check suppression file for the SCOS BOM.
+
+  This is the repo-local default referenced by the `dependency-check.suppressionFile` property in the
+  `analyze` profile. It is intentionally empty: the BOM ships no code and no runtime dependencies, so
+  there is nothing to suppress here yet.
+
+  Consumers override the location with -Ddependency-check.suppressionFile=... (or inherit the org-wide
+  suppressions.xml published in the scos-build-config artifact). Add a <suppress> block only with a
+  justification and, ideally, a review/expiry note.
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+</suppressions>
