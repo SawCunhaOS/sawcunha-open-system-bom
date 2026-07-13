@@ -62,8 +62,7 @@
     </ciManagement>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -85,14 +84,14 @@
         <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
 
         <!-- Utilities & Annotations -->
-        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.46</lombok.version>
         <gson.version>2.14.0</gson.version>
 
         <!-- Database & ORM -->
         <postgresql.version>42.7.11</postgresql.version>
         <liquibase.version>5.0.3</liquibase.version>
-        <op_querydsl.version>7.1</op_querydsl.version>
+        <querydsl.version>7.1</querydsl.version>
         <mysql-connector-j.version>9.7.0</mysql-connector-j.version>
         <hibernate-spatial.version>7.4.1.Final</hibernate-spatial.version>
         <jts-core.version>1.20.0</jts-core.version>
@@ -192,7 +191,7 @@
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
-                <version>${org.mapstruct.version}</version>
+                <version>${mapstruct.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -239,18 +238,18 @@
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-jpa</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-apt</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign.querydsl</groupId>
                 <artifactId>querydsl-jpa-spring</artifactId>
-                <version>${op_querydsl.version}</version>
+                <version>${querydsl.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.antlr</groupId>
@@ -396,7 +395,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- ...existing code... -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -406,6 +404,22 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.15.0</version>
+                    <configuration>
+                        <!-- Release level comes from the maven.compiler.release property. -->
+                        <encoding>UTF-8</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -422,19 +436,12 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.8</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.7.0</version>
-                </plugin>
-                <!-- ...existing code... -->
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -458,24 +465,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <source>25</source>
-                    <target>25</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -520,7 +509,9 @@
                         </executions>
                     </plugin>
 
-                    <!-- GPG Signing -->
+                    <!-- GPG Signing. Passphrase and pinentry/loopback mechanics live in the CI
+                         (.github/actions/setup-gpg exports MAVEN_GPG_PASSPHRASE and configures the
+                         gpg-agent for loopback), so the POM only declares the sign execution. -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -532,15 +523,6 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
-                                <configuration>
-                                    <passphrase>${env.GPG_PASSPHRASE}</passphrase>
-                                    <gpgArguments>
-                                        <arg>--batch</arg>
-                                        <arg>--no-tty</arg>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

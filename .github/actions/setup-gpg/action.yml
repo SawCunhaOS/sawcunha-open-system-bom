@@ -32,3 +32,14 @@ runs:
         # Configure GPG to use loopback for all operations
         echo "pinentry-program /usr/bin/pinentry-loopback" >> ~/.gnupg/gpg-agent.conf || true
         gpgconf --kill gpg-agent || true
+
+    - name: Export passphrase for maven-gpg-plugin
+      shell: bash
+      env:
+        GPG_PASSPHRASE: ${{ inputs.GPG_PASSPHRASE }}
+      run: |
+        # maven-gpg-plugin reads the passphrase from MAVEN_GPG_PASSPHRASE and, combined with the
+        # loopback pinentry configured above, signs non-interactively. Keeping this here (instead of
+        # in the POM) means the pom.xml carries no signing mechanics.
+        echo "::add-mask::$GPG_PASSPHRASE"
+        echo "MAVEN_GPG_PASSPHRASE=$GPG_PASSPHRASE" >> "$GITHUB_ENV"
