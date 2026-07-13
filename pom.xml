@@ -456,6 +456,10 @@
                                 <requireJavaVersion>
                                     <version>[25,)</version>
                                 </requireJavaVersion>
+                                <!-- BOM authority: no duplicated managed versions, and consumers
+                                     must not silently downgrade a transitive to a lower version. -->
+                                <banDuplicatePomDependencyVersions/>
+                                <requireUpperBoundDeps/>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -586,6 +590,34 @@
                         <configuration>
                             <configLocation>${basedir}/etc/devops/checkstyle/checkstyle.xml</configLocation>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Opt-in strict convergence. dependencyConvergence is noisy on real applications, so it is
+             NOT active by default; enable with -Pstrict-convergence. See README ("Enforcer") for when. -->
+        <profile>
+            <id>strict-convergence</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-convergence</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <dependencyConvergence/>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
