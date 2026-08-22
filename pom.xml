@@ -6,7 +6,7 @@
 
     <groupId>br.com.sawcunhaos</groupId>
     <artifactId>scos-bom</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SCOS BOM</name>
@@ -97,7 +97,7 @@
         <!-- Database & ORM -->
         <postgresql.version>42.7.13</postgresql.version>
         <liquibase.version>5.0.4</liquibase.version>
-        <querydsl.version>7.6.0</querydsl.version>
+        <querydsl.version>7.6</querydsl.version>
         <mysql-connector-j.version>26.7.0</mysql-connector-j.version>
         <hibernate-spatial.version>7.4.5.Final</hibernate-spatial.version>
         <jts-core.version>1.20.0</jts-core.version>
