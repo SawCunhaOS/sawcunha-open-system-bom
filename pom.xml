@@ -82,7 +82,6 @@
 
         <!-- Build Plugins -->
         <checkstyle-maven-plugin.version>3.6.0</checkstyle-maven-plugin.version>
-        <scos-build-config.version>1.0.0</scos-build-config.version>
 
         <!-- analyze profile knobs (overridable by consumers and CI) -->
         <jacoco.line.minimum>0.00</jacoco.line.minimum>
@@ -645,18 +644,12 @@
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <version>${checkstyle-maven-plugin.version}</version>
                         <configuration>
-                            <!-- Ruleset comes from the shared scos-build-config artifact (sibling repo),
-                                 loaded from the plugin classpath, so every SCOS project shares one config
-                                 instead of a path baked into each repo. -->
-                            <configLocation>checkstyle/checkstyle.xml</configLocation>
+                            <!-- Ruleset lives in each consumer repo (etc/devops/checkstyle/checkstyle.xml),
+                                 anchored to the reactor root so it resolves the same from the root POM or
+                                 any module. Previously loaded from the scos-build-config artifact's
+                                 classpath, but that artifact isn't published; reverted to a local path. -->
+                            <configLocation>${maven.multiModuleProjectDirectory}/etc/devops/checkstyle/checkstyle.xml</configLocation>
                         </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>br.com.sawcunhaos</groupId>
-                                <artifactId>scos-build-config</artifactId>
-                                <version>${scos-build-config.version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
