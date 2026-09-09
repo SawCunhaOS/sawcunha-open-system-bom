@@ -1,0 +1,106 @@
+{
+ "fato": "docs",
+ "modulo": "_raiz",
+ "fonte": "cabecalhos markdown / declaracoes proto",
+ "confianca": "alta",
+ "gerado_em": "2026-09-09T22:10:41Z",
+ "derivado_de": {
+  "CHANGELOG.md": "fecf4fd",
+  "CONTRIBUTING.md": "911a20e",
+  "README.md": "76b8e62",
+  "SECURITY.md": "0887ad3",
+  ".github/pull_request_template.md": "488e352"
+ },
+ "aviso": "indice apenas - abra o arquivo pelo caminho para ler o conteudo",
+ "itens": [
+  {
+   "path": "CHANGELOG.md",
+   "bytes": 3267,
+   "last_modified": "2026-07-13",
+   "last_commit": "1c12934",
+   "commits_90d": 1,
+   "titulo": "Changelog",
+   "secoes": [
+    "[Unreleased]",
+    "Deprecated",
+    "[1.3.0]",
+    "Fixed",
+    "Added",
+    "Changed",
+    "Removed"
+   ]
+  },
+  {
+   "path": "CONTRIBUTING.md",
+   "bytes": 3198,
+   "last_modified": "2026-07-13",
+   "last_commit": "1c12934",
+   "commits_90d": 1,
+   "titulo": "Contributing to SCOS BOM",
+   "secoes": [
+    "Ground rules",
+    "Commit conventions",
+    "Branching model",
+    "Proposing a version bump",
+    "Local checks"
+   ]
+  },
+  {
+   "path": "README.md",
+   "bytes": 10108,
+   "last_modified": "2026-07-13",
+   "last_commit": "769a572",
+   "commits_90d": 1,
+   "titulo": "SCOS BOM (SawCunha Open System)",
+   "secoes": [
+    "📦 Overview",
+    "🔖 Source of truth for versions",
+    "From a checkout of this repo (or a consumer project):",
+    "A single managed version, e.g. Spring Boot:",
+    "🚀 Usage",
+    "A) As a `<parent>` — versions **and** build conventions",
+    "B) Via `<scope>import</scope>` — versions **only**",
+    "Gradle (import only)",
+    "🔁 Coordinate migration",
+    "🧭 Branching & release model",
+    "🧰 Enforcer",
+    "🔍 Analysis profile",
+    "📊 Minimum compatibility matrix",
+    "🔢 Versioning",
+    "🤝 Contributing",
+    "📜 License",
+    "🧭 About SawCunha Open System (SCOS)",
+    "🔗 Quick links"
+   ]
+  },
+  {
+   "path": "SECURITY.md",
+   "bytes": 1594,
+   "last_modified": "2026-07-13",
+   "last_commit": "1c12934",
+   "commits_90d": 1,
+   "titulo": "Security Policy",
+   "secoes": [
+    "Supported versions",
+    "Reporting a vulnerability",
+    "What to expect",
+    "Scope"
+   ]
+  },
+  {
+   "path": ".github/pull_request_template.md",
+   "bytes": 652,
+   "last_modified": "2026-06-13",
+   "last_commit": "1679ac0",
+   "commits_90d": 1,
+   "titulo": "Descrição",
+   "secoes": [
+    "Tipo de Mudança",
+    "Módulo(s) Afetado(s)",
+    "Checklist",
+    "Breaking Changes",
+    "Referências"
+   ]
+  }
+ ]
+}
