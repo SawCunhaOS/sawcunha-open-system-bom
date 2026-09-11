@@ -1,0 +1,1 @@
+{"fato":"reactor","modulo":"_reactor","base":"poms e manifests do repo","confianca":"alta","derivado_de":{"pom.xml":"6fefe06868a4"},"modulos":[{"id":"_raiz","tipo":"pom","ecossistema":"maven","artefato":"br.com.sawcunhaos:scos-bom"}]}
