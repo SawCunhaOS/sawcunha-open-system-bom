@@ -1,0 +1,25 @@
+path	blob	bytes	lines	module	kind	last_commit	last_modified	author	commits_90d	tracked
+.gitignore	26a46895af1e	313	27	_raiz	config	ef419dcc749f	2026-02-13	Samuel Cunha	0	1
+CHANGELOG.md	fecf4fd30b19	3267	66	_raiz	doc	1c12934483d6	2026-07-13	Samuel Cunha	1	1
+CONTRIBUTING.md	911a20e1546c	3198	65	_raiz	doc	1c12934483d6	2026-07-13	Samuel Cunha	1	1
+LICENSE	261eeb9e9f8b	11357	202	_raiz	nao_classificado	fc11919bd13b	2026-02-13	Samuel Gonçalves Cunha	0	1
+README.md	76b8e62da5ce	10108	258	_raiz	doc	769a572a9f9f	2026-07-13	Samuel Cunha	1	1
+SECURITY.md	0887ad3f7fbe	1594	42	_raiz	doc	1c12934483d6	2026-07-13	Samuel Cunha	1	1
+pom.xml	6fefe06868a4	31564	710	_raiz	build	02477f62448a	2026-09-06	Samuel Cunha	26	1
+renovate.json	cf28ca64de86	1164	45	_raiz	nao_classificado	1c12934483d6	2026-07-13	Samuel Cunha	1	1
+.github/CODEOWNERS	aeeb8bece8e2	5799	81	_raiz	nao_classificado	ef419dcc749f	2026-02-13	Samuel Cunha	0	1
+.github/pull_request_template.md	488e352b4b61	652	34	_raiz	doc	1679ac035163	2026-06-13	Samuel Cunha	1	1
+.github/actions/setup-gpg/action.yml	df1a3059a465	1809	46	_raiz	config	6bf1c1585cfa	2026-07-13	Samuel Cunha	2	1
+.github/workflows/build.yml	4e9b4d0931da	1332	43	_raiz	config	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+.github/workflows/manual-release.yml	16735c4affa1	2225	79	_raiz	config	1679ac035163	2026-06-13	Samuel Cunha	1	1
+.github/workflows/publish-snapshot.yml	128a13eae7b6	1755	56	_raiz	config	1679ac035163	2026-06-13	Samuel Cunha	1	1
+.github/workflows/release-notes.yml	fa353ae0341a	1054	40	_raiz	config	1679ac035163	2026-06-13	Samuel Cunha	1	1
+.github/workflows/validate-pr-target.yml	7caf5bbf29bd	571	24	_raiz	config	1679ac035163	2026-06-13	Samuel Cunha	1	1
+.github/workflows/validate-pr-template.yml	d04147f44e67	853	27	_raiz	config	1679ac035163	2026-06-13	Samuel Cunha	1	1
+etc/dependency-check/suppressions.xml	8f977d715a6f	725	15	_raiz	config	909076b8ca05	2026-07-13	Samuel Cunha	1	1
+scripts/close_version.sh	7323b28b1543	652	23	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+scripts/deploy.sh	a9401700b290	845	29	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+scripts/release.sh	19cd1371fb76	6546	213	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+scripts/starts_new_version.sh	997c75788478	1684	81	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+scripts/validate-pr-target.sh	de7c338babbb	1979	87	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
+scripts/validate-pr-template.sh	42e6635aa510	2312	92	_raiz	codigo	f3dd0bab509a	2026-07-13	Samuel Cunha	2	1
